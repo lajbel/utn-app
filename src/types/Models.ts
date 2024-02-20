@@ -21,3 +21,4 @@ export type Recipe = {
 
 export type RegisterUser = Pick<User, "username" | "email" | "password">;
 export type LoginUser = Pick<User, "email" | "password">;
+export type CreateRecipe = Omit<Recipe, "id" | "user">;

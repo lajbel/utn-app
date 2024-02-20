@@ -1,5 +1,10 @@
-import { faBars } from "@fortawesome/free-solid-svg-icons";
+import {
+    faBars,
+    faCirclePlus,
+    faScroll,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useFormik } from "formik";
 import { PropsWithChildren } from "react";
 import { useCallback, useState } from "react";
 import { Button, Drawer, Menu, Navbar } from "react-daisyui";
@@ -29,7 +34,25 @@ export default function Navigator({ children }: PropsWithChildren<{}>) {
     const authItems = () => {
         return (
             <div className="flex">
-                <ProfileDrop />
+                <>
+                    <Menu horizontal={true}>
+                        <Menu.Item className="font-medium">
+                            <Link to="/recipes">
+                                <FontAwesomeIcon icon={faScroll} /> My Recipes
+                            </Link>
+                        </Menu.Item>
+                        <Menu.Item className="font-medium justify-center">
+                            <Link to="/create">
+                                <FontAwesomeIcon icon={faCirclePlus} />
+
+                                <span className="sr-only">
+                                    Create new recipe
+                                </span>
+                            </Link>
+                        </Menu.Item>
+                    </Menu>
+                    <ProfileDrop />
+                </>
             </div>
         );
     };

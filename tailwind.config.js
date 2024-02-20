@@ -13,6 +13,8 @@ export default {
         themes: ["cupcake", "halloween"],
     },
     plugins: [
+        /** @type {import("@tailwindcss/typography").Config} */
+        require("@tailwindcss/typography"),
         /** @type {import("daisyui").Config} */
         require("daisyui"),
     ],
