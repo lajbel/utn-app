@@ -1,10 +1,10 @@
-import type { Recipe } from "@/types/Models.ts";
-import { SchemaTypes } from "mongoose";
+import type { Recipe } from "@/types/recipe.ts";
+import { Model, SchemaTypes } from "mongoose";
 import mongoose from "../db.ts";
 
-export type IRecipe = Recipe & mongoose.Document;
+export type RecipeModel = Model<Recipe>;
 
-const RecipeSchema = new mongoose.Schema<Recipe>(
+const RecipeSchema = new mongoose.Schema<Recipe, RecipeModel>(
     {
         title: {
             type: SchemaTypes.String,
@@ -37,5 +37,5 @@ const RecipeSchema = new mongoose.Schema<Recipe>(
     },
 );
 
-const RecipeModel = mongoose.model<Recipe>("Recipe", RecipeSchema);
+const RecipeModel = mongoose.model<Recipe, RecipeModel>("Recipe", RecipeSchema);
 export default RecipeModel;

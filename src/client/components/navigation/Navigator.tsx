@@ -1,10 +1,5 @@
-import {
-    faBars,
-    faCirclePlus,
-    faScroll,
-} from "@fortawesome/free-solid-svg-icons";
+import * as fs from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useFormik } from "formik";
 import { PropsWithChildren } from "react";
 import { useCallback, useState } from "react";
 import { Button, Drawer, Menu, Navbar } from "react-daisyui";
@@ -15,6 +10,10 @@ import ProfileDrop from "./ProfileDrop";
 export default function Navigator({ children }: PropsWithChildren<{}>) {
     const [visible, setVisible] = useState(false);
     const { isAuthenticated } = useAuth();
+
+    const toggleVisible = useCallback(() => {
+        setVisible((visible) => !visible);
+    }, []);
 
     const noAuthItems = () => {
         return (
@@ -33,33 +32,29 @@ export default function Navigator({ children }: PropsWithChildren<{}>) {
 
     const authItems = () => {
         return (
-            <div className="flex">
-                <>
-                    <Menu horizontal={true}>
-                        <Menu.Item className="font-medium">
-                            <Link to="/recipes">
-                                <FontAwesomeIcon icon={faScroll} /> My Recipes
-                            </Link>
-                        </Menu.Item>
-                        <Menu.Item className="font-medium justify-center">
-                            <Link to="/create">
-                                <FontAwesomeIcon icon={faCirclePlus} />
+            <>
+                <div className="join">
+                    <Link
+                        to="/recipes"
+                        className="join-item btn btn-ghost gap-2"
+                    >
+                        <FontAwesomeIcon icon={fs.faScroll} size="xl" />
+                        My Recipes
+                    </Link>
 
-                                <span className="sr-only">
-                                    Create new recipe
-                                </span>
-                            </Link>
-                        </Menu.Item>
-                    </Menu>
-                    <ProfileDrop />
-                </>
-            </div>
+                    <Link to="/create" className="join-item btn btn-ghost">
+                        <FontAwesomeIcon icon={fs.faCirclePlus} size="xl" />
+
+                        <span className="sr-only">
+                            Create new recipe
+                        </span>
+                    </Link>
+                </div>
+
+                <ProfileDrop />
+            </>
         );
     };
-
-    const toggleVisible = useCallback(() => {
-        setVisible((visible) => !visible);
-    }, []);
 
     return (
         <Drawer
@@ -85,7 +80,7 @@ export default function Navigator({ children }: PropsWithChildren<{}>) {
                         onClick={toggleVisible}
                         aria-label="Toggle Sidebar"
                     >
-                        <FontAwesomeIcon icon={faBars} />
+                        <FontAwesomeIcon icon={fs.faBars} />
                     </Button>
                 </div>
                 <div className="flex-1 px-2 mx-2">
@@ -93,7 +88,7 @@ export default function Navigator({ children }: PropsWithChildren<{}>) {
                         PancakeSnap 🥞
                     </Link>
                 </div>
-                <div className="flex-none hidden lg:block">
+                <div className="flex-none px-2 mx-2 hidden lg:flex gap-2">
                     {isAuthenticated ? authItems() : noAuthItems()}
                 </div>
             </Navbar>

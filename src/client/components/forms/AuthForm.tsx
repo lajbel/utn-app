@@ -1,4 +1,4 @@
-import type { RegisterUser } from "@/types/Models";
+import type { UserForRegister } from "@/types/user";
 import { useFormik } from "formik";
 import { useEffect } from "react";
 import { Alert, Button, Card, Form, Input } from "react-daisyui";
@@ -10,9 +10,9 @@ type Props = {
 };
 
 function AuthForm({ type = "login" }: Props) {
-    const { signUp, singIn, isAuthenticated, errors } = useAuth();
+    const { signUp, signIn, isAuthenticated, errors } = useAuth();
     const navigate = useNavigate();
-    const formik = useFormik<RegisterUser>({
+    const formik = useFormik<UserForRegister>({
         initialValues: {
             username: "",
             password: "",
@@ -20,7 +20,7 @@ function AuthForm({ type = "login" }: Props) {
         },
         onSubmit: async (values) => {
             if (type === "login") {
-                await singIn(values);
+                await signIn(values);
             }
             else {
                 await signUp(values);
@@ -50,7 +50,7 @@ function AuthForm({ type = "login" }: Props) {
                     <Input
                         id="email"
                         type="email"
-                        placeholder=" [email protected]"
+                        placeholder="example@gmail.com"
                         className={"input-bordered"}
                         onChange={formik.handleChange}
                         value={formik.values.email}
@@ -62,7 +62,7 @@ function AuthForm({ type = "login" }: Props) {
                             <Input
                                 id="username"
                                 type="text"
-                                placeholder="@markbeans"
+                                placeholder="markbeans"
                                 className="input-bordered"
                                 onChange={formik.handleChange}
                                 value={formik.values.username}

@@ -1,25 +1,37 @@
 import { Router } from "express";
+import * as recipesController from "../controllers/recipes.controller.ts";
+import { verifyAuth } from "../middlewares/verifyAuth.ts";
 
 const router = Router();
 
-router.post("/recipes", (req, res) => {
-    res.send("Create a recipe");
-});
+router.post(
+    "/recipes",
+    verifyAuth,
+    recipesController.createRecipe,
+);
 
-router.get("/recipes", (req, res) => {
-    res.send("Get all recipes");
-});
+router.get(
+    "/recipes",
+    verifyAuth,
+    recipesController.getRecipes,
+);
 
-router.get("/recipes/:id", (req, res) => {
-    res.send("Get a recipe");
-});
+router.get(
+    "/recipes/:id",
+    verifyAuth,
+    recipesController.getRecipe,
+);
 
-router.put("/recipes/:id", (req, res) => {
-    res.send("Update a recipe");
-});
+router.put(
+    "/recipes/:id",
+    verifyAuth,
+    recipesController.updateRecipe,
+);
 
-router.delete("/recipes/:id", (req, res) => {
-    res.send("Delete a recipe");
-});
+router.delete(
+    "/recipes/:id",
+    verifyAuth,
+    recipesController.deleteRecipe,
+);
 
 export default router;

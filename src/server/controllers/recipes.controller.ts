@@ -4,9 +4,9 @@ import {
     GetRecipeRequest,
     GetRecipesRequest,
     UpdateRecipeRequest,
-} from "@/types/Requests.ts";
+} from "@/types/recipe.ts";
 import { resInternalServerError } from "../lib/responses.ts";
-import RecipeModel, { IRecipe } from "../models/Recipe.ts";
+import RecipeModel from "../models/Recipe.ts";
 
 export const createRecipe: CreateRecipeRequest = async (req, res) => {
     const { title, content, portraitImage, summary, tags } = req.body;

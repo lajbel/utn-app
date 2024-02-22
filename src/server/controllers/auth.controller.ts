@@ -1,23 +1,26 @@
+// ?: Implement logger
+
 import type {
     LoginRequest,
     RegisterRequest,
+    User,
     VerifyRequest,
-} from "@/types/Requests.ts";
+} from "@/types/user.ts";
 import bcrypt from "bcryptjs";
 import type { RequestHandler, Response } from "express";
 import { authenticateToken, createAcessToken } from "../lib/jwt.ts";
 import { resBadRequest, resInternalServerError } from "../lib/responses.ts";
-import UserModel, { IUser } from "../models/User.ts";
+import UserModel from "../models/User.ts";
 
 function sendAuthCookie(res: Response, token: string) {
-    res.cookie("token", token, {
+    return res.cookie("token", token, {
         sameSite: "none",
         secure: true,
         httpOnly: false,
     });
 }
 
-function createAuthToken(user: IUser) {
+function createAuthToken(user: User) {
     return createAcessToken({
         email: user.email,
         username: user.username,
@@ -62,33 +65,24 @@ export const register: RegisterRequest = async (req, res) => {
 };
 
 export const login: LoginRequest = async (req, res) => {
-    const { email, password, username } = req.body;
+    const { email, password } = req.body;
 
     try {
-        const foundUser = await UserModel.findOne({ email })
-            || await UserModel.findOne({ username });
-
-        if (!foundUser) {
-            return resBadRequest(res, "User does not exist");
-        }
+        const foundUser = await UserModel.findOne({ email });
+        if (!foundUser) return resBadRequest(res, "User doesn't exist");
 
         const passwordMatch = await bcrypt.compare(
             password,
             foundUser.password,
         );
-
-        if (!passwordMatch) {
-            return resBadRequest(res, "Invalid credentials");
-        }
+        if (!passwordMatch) return resBadRequest(res, "Invalid credentials");
 
         const token = await createAuthToken(foundUser);
         sendAuthCookie(res, token);
 
         return res.status(200).json({
             message: "User logged in successfully",
-            user: {
-                ...foundUser.toObject(),
-            },
+            user: { ...foundUser.toObject() },
         });
     }
     catch (e) {
@@ -121,7 +115,7 @@ export const verify: VerifyRequest = async (req, res) => {
         }
 
         const foundUser = await UserModel.findById(userFromToken.id, {
-            password: false,
+            password: 0,
         });
 
         if (!foundUser) {
@@ -134,7 +128,6 @@ export const verify: VerifyRequest = async (req, res) => {
         });
     }
     catch (e) {
-        console.log(e);
-        return resInternalServerError(res);
+        return res.cookie("token", "").json({ message: "Unauthorized" });
     }
 };

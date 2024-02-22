@@ -11,11 +11,11 @@ function App() {
     return (
         <Navigator>
             <Routes>
-                <Route
-                    path="/"
-                    element={<LandPage />}
-                />
                 <Route element={<OnlyNotAuthenticated />}>
+                    <Route
+                        path="/"
+                        element={<LandPage />}
+                    />
                     <Route
                         path="/login"
                         element={<AuthPage type="login" />}
@@ -27,10 +27,6 @@ function App() {
                 </Route>
                 <Route element={<OnlyAuthenticated />}>
                     <Route
-                        path="/profile"
-                        element={<ProfilePage />}
-                    />
-                    <Route
                         path="/recipes"
                         element={<RecipesPage />}
                     />
@@ -39,6 +35,10 @@ function App() {
                         element={<CreateRecipePage />}
                     />
                 </Route>
+                <Route
+                    path="/profile/:id"
+                    element={<ProfilePage />}
+                />
             </Routes>
         </Navigator>
     );

@@ -20,7 +20,7 @@ function ProfileDrop() {
             </Button>
             <Dropdown.Menu className="w-52 menu-sm mt-3 z-[1] p-2">
                 <li>
-                    <Link to="/profile">@{user?.username}</Link>
+                    <Link to={`/profile/${user?._id}`}>@{user?.username}</Link>
                 </li>
                 <Dropdown.Item onClick={logOut}>
                     Logout

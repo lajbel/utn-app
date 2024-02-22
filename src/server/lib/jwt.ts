@@ -1,5 +1,11 @@
 import jwt from "jsonwebtoken";
-import type { IUser } from "../models/User.ts";
+import type { UserModel } from "../models/User.ts";
+
+type UserDecoded = {
+    email: string;
+    username: string;
+    id: string;
+};
 
 export function createAcessToken(payload: object) {
     return new Promise<string>((resolve, reject) => {
@@ -18,10 +24,10 @@ export function createAcessToken(payload: object) {
 }
 
 export function authenticateToken(token: string) {
-    return new Promise<IUser>((resolve, reject) => {
+    return new Promise<UserDecoded>((resolve, reject) => {
         jwt.verify(token, process.env.SECRET_WORD!, (err, decoded) => {
             if (err) reject(err);
-            resolve(decoded as IUser);
+            resolve(decoded as UserDecoded);
         });
     });
 }

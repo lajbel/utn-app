@@ -1,18 +1,17 @@
-import type { VerifyRequest } from "@/types/Requests.ts";
+import { RequestHandler } from "express";
 import { authenticateToken } from "../lib/jwt.ts";
 
-export const verifyAuth: VerifyRequest = (req, res, next) => {
+export const verifyAuth: RequestHandler = async (req, res, next) => {
     const { token } = req.cookies;
     if (!token) return res.status(401).json({ message: "Unauthorized" });
 
-    authenticateToken(token)
-        .then((decoded) => {
-            // @ts-ignore TODO: Fix this
-            req.user = decoded;
-            next();
-        })
-        .catch((err) => {
-            console.error(err);
-            return res.status(401).json({ message: "Invalid token" });
-        });
+    try {
+        const decodedUser = await authenticateToken(token);
+        req.user = decodedUser;
+        next();
+    }
+    catch (err) {
+        console.error(err);
+        return res.status(401).json({ message: "Invalid token" });
+    }
 };

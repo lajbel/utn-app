@@ -1,11 +1,18 @@
+import { Loading } from "react-daisyui";
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
+
+const LoadingDots = () => {
+    return (
+        <span className="loading loading-dots loading-lg text-primary"></span>
+    );
+};
 
 export const OnlyAuthenticated = () => {
     const { isAuthenticated, loading } = useAuth();
 
     if (loading) {
-        return <p>loading</p>;
+        return <LoadingDots />;
     }
     else if (!isAuthenticated && !loading) {
         return <Navigate to="/login" replace />;
@@ -18,10 +25,10 @@ export const OnlyNotAuthenticated = () => {
     const { isAuthenticated, loading } = useAuth();
 
     if (loading) {
-        return <p>loading</p>;
+        return <LoadingDots />;
     }
     else if (isAuthenticated && !loading) {
-        return <Navigate to="/" replace />;
+        return <Navigate to="/recipes" replace />;
     }
 
     return <Outlet />;

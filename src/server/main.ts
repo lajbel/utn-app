@@ -6,6 +6,8 @@ import morgan from "morgan";
 import ViteExpress from "vite-express";
 import { connectToDatabase } from "./db.ts";
 import authRouter from "./routers/auth.routes.ts";
+import recipeRouter from "./routers/recipes.routes.ts";
+import userRouter from "./routers/users.routes.ts";
 
 dotenv.config();
 const app = express();
@@ -19,6 +21,8 @@ app.use(fileUploader());
 
 // Routes
 app.use("/api/auth", authRouter);
+app.use("/api/", recipeRouter);
+app.use("/api/", userRouter);
 
 try {
     connectToDatabase();

@@ -1,4 +1,4 @@
-import { CreateRecipe } from "@/types/Models";
+import { CreateRecipe } from "@/types/recipe";
 import { useFormik } from "formik";
 import { Badge, Button, Card, FileInput, Form, Input } from "react-daisyui";
 import Select from "react-select";
@@ -12,6 +12,7 @@ function CreateRecipePage() {
             content: "",
             portraitImage: "",
             tags: [],
+            isPublic: false,
         },
         onSubmit: async (values) => {
             console.log(values);

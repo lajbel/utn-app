@@ -1,10 +1,10 @@
-import type { User } from "@/types/Models.ts";
-import { SchemaTypes } from "mongoose";
+import type { User } from "@/types/user.ts";
+import { Model, SchemaTypes } from "mongoose";
 import mongoose from "../db.ts";
 
-export type IUser = User & mongoose.Document;
+export type UserModel = Model<User>;
 
-const UserSchema = new mongoose.Schema<IUser>(
+const UserSchema = new mongoose.Schema<User, UserModel>(
     {
         email: {
             type: SchemaTypes.String,
@@ -32,5 +32,5 @@ const UserSchema = new mongoose.Schema<IUser>(
     },
 );
 
-const UserModel = mongoose.model<User>("User", UserSchema);
+const UserModel = mongoose.model<User, UserModel>("User", UserSchema);
 export default UserModel;

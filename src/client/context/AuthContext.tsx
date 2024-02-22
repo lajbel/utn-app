@@ -1,4 +1,4 @@
-import type { LoginUser, RegisterUser, User } from "@/types/Models";
+import type { User, UserForLogin, UserForRegister } from "@/types/user";
 import Cookies from "js-cookie";
 import {
     createContext,
@@ -10,25 +10,25 @@ import {
 import { useLocation } from "react-router-dom";
 import { loginRequest, registerRequest, verifyToken } from "../api/auth";
 
-interface AuthContextData {
-    signUp: (user: RegisterUser) => Promise<void>;
-    singIn: (user: LoginUser) => Promise<void>;
+type AuthContextData = {
+    signUp: (user: UserForRegister) => Promise<void>;
+    signIn: (user: UserForLogin) => Promise<void>;
     logOut: () => void;
     isAuthenticated: boolean;
     errors: string[];
     user: User | undefined;
     loading: boolean;
-}
+};
 
 const AuthContext = createContext<AuthContextData | undefined>(undefined);
 
-export function useAuth() {
+export const useAuth = () => {
     const context = useContext(AuthContext);
     if (!context) {
         throw new Error("useAuth must be used within an AuthProvider");
     }
     return context;
-}
+};
 
 export const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
     const [user, setUser] = useState<User | undefined>(undefined);
@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
     const [loading, setLoading] = useState<boolean>(true);
     const location = useLocation();
 
-    const signUp = async (user: RegisterUser) => {
+    const signUp = async (user: UserForRegister) => {
         try {
             const res = await registerRequest(user);
             setUser(res.data.user);
@@ -48,15 +48,13 @@ export const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
         }
     };
 
-    const singIn = async (user: LoginUser) => {
+    const signIn = async (user: UserForLogin) => {
         try {
             const res = await loginRequest(user);
-
             if (res.data.status === 400) {
                 setErrors([res.data.message]);
                 return;
             }
-
             setUser(res.data.user);
             setIsAuthenticated(true);
         }
@@ -79,7 +77,6 @@ export const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
                 setLoading(false);
                 return;
             }
-
             try {
                 const res = await verifyToken();
                 if (!res.data) return setIsAuthenticated(false);
@@ -92,7 +89,6 @@ export const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
                 setLoading(false);
             }
         };
-
         checkLogin();
     }, []);
 
@@ -104,7 +100,7 @@ export const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
         <AuthContext.Provider
             value={{
                 signUp,
-                singIn,
+                signIn,
                 logOut,
                 isAuthenticated,
                 errors,
