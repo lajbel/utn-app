@@ -1,29 +1,16 @@
-import { type Recipe } from "@/types/Models";
+import { Recipe } from "@/types/recipe";
+import { faBook, faPencil } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Card } from "react-daisyui";
+import { Link } from "react-router-dom";
 import RecipeTag from "./RecipeTag";
 
-const exampleImage =
-    "https://images.unsplash.com/photo-1589119908995-c6837fa14848?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
-
-const exampleRecipe: Recipe = {
-    id: "1",
-    title: "Cheesecake with strawberries and chocolate",
-    summary:
-        "A delicious and easy cheesecake recipe with strawberries and chocolate",
-    content: "",
-    portraitImage: exampleImage,
-    tags: ["cheap", "easy"],
-    user: {
-        id: "1",
-        username: "@daniel",
-        email: "",
-    },
-    isPublic: true,
+type Props = {
+    recipe: Recipe;
 };
 
-function RecipeCard({ recipe = exampleRecipe }) {
+function RecipeCard({ recipe }: Props) {
     const {
-        id,
         title,
         summary,
         portraitImage,
@@ -37,7 +24,7 @@ function RecipeCard({ recipe = exampleRecipe }) {
             <Card.Image
                 src={portraitImage}
                 alt="Recipe image"
-                className="max-h-70 object-cover w-full shadow-inner"
+                className="max-h-70 object-cover w-full shadow-inner aspect-square"
             />
             <Card.Body>
                 <h2 className="text-xl font-bold text-balance">
@@ -47,7 +34,10 @@ function RecipeCard({ recipe = exampleRecipe }) {
                     {summary}
                 </p>
                 <div className="flex gap-1">
-                    {tags.map((t) => <RecipeTag key={t} name={t} />)}
+                    {/** @ts-ignore */}
+                    {tags.split(",").map((t: any) => (
+                        <RecipeTag key={t} name={t} />
+                    ))}
                 </div>
 
                 {isPublic && (
@@ -60,6 +50,23 @@ function RecipeCard({ recipe = exampleRecipe }) {
                         By {username}
                     </a>
                 )}
+
+                <div className="card-actions">
+                    <Link
+                        className="btn btn-primary flex-1"
+                        to={`/recipe/${recipe._id}`}
+                    >
+                        <FontAwesomeIcon icon={faBook} />
+                        Read
+                    </Link>
+                    <Link
+                        className="btn btn-warning"
+                        to={`/edit/${recipe._id}`}
+                    >
+                        <FontAwesomeIcon icon={faPencil} />
+                        Manage
+                    </Link>
+                </div>
             </Card.Body>
         </Card>
     );

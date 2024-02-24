@@ -17,6 +17,12 @@ router.get(
 );
 
 router.get(
+    "/recipes/user/:id",
+    verifyAuth,
+    recipesController.getUserRecipes,
+);
+
+router.get(
     "/recipes/:id",
     verifyAuth,
     recipesController.getRecipe,

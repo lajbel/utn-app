@@ -29,7 +29,6 @@ const RecipeSchema = new mongoose.Schema<Recipe, RecipeModel>(
         user: {
             type: SchemaTypes.ObjectId,
             ref: "User",
-            required: true,
         },
     },
     {

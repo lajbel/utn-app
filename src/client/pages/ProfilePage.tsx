@@ -1,16 +1,25 @@
 import { User } from "@/types/user";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getUser } from "../api/user";
+import { getUserRequest } from "../api/user";
+import {
+    EditProfileModal,
+    ModalHandles,
+} from "../components/forms/EditProfileForm";
 import { cn } from "../lib/util";
 
 function ProfilePage() {
     const { id } = useParams();
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
+    const modalRef = useRef<ModalHandles>(null);
+
+    const handleEditClick = () => {
+        modalRef.current?.handleShow();
+    };
 
     useEffect(() => {
-        getUser(id!).then((res) => {
+        getUserRequest(id!).then((res) => {
             if (res.data) {
                 setUser(res.data.user);
                 setLoading(false);
@@ -19,7 +28,14 @@ function ProfilePage() {
     }, [id]);
 
     return (
-        <div className="flex flex-col p-8 bg-base-200 w-full max-w-3xl">
+        <div className="flex flex-col p-8 bg-base-200 w-full max-w-3xl gap-4">
+            {user && (
+                <EditProfileModal
+                    ref={modalRef}
+                    user={user}
+                />
+            )}
+
             <div className="flex gap-4">
                 <div className="avatar">
                     <div
@@ -58,6 +74,15 @@ function ProfilePage() {
                         {user?.profileDescription ?? "Loading..."}
                     </p>
                 </div>
+            </div>
+
+            <div>
+                <button
+                    onClick={handleEditClick}
+                    className="btn btn-primary"
+                >
+                    Edit Profile
+                </button>
             </div>
         </div>
     );

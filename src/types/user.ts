@@ -11,6 +11,14 @@ export type User = MongooseSchema<{
     profileDescription: string;
 }>;
 
+export type UserForCreate = {
+    email: string;
+    password: string;
+    username: string;
+    profilePhoto?: File;
+    profielDescription?: string;
+};
+
 export type UserWithoutPassword = Omit<User, "password">;
 export type UserForRegister = Pick<User, "email" | "password" | "username">;
 export type UserForLogin = Pick<User, "email" | "password">;

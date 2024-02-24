@@ -20,7 +20,7 @@ function Tiptap({ onChange }: Props) {
         editorProps: {
             attributes: {
                 class:
-                    "textarea textarea-bordered prose rounded w-full min-w-full min-h-40 For make this, you will need....",
+                    "textarea textarea-bordered prose rounded w-full min-w-full min-h-40 max-h-96 max-w-full h-96 overflow-y-auto",
             },
         },
         onUpdate: ({ editor }) => {

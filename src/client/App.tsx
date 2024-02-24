@@ -4,6 +4,7 @@ import AuthPage from "./pages/AuthPage";
 import CreateRecipePage from "./pages/CreateRecipePage";
 import LandPage from "./pages/LandPage";
 import ProfilePage from "./pages/ProfilePage";
+import RecipePage from "./pages/RecipePage";
 import RecipesPage from "./pages/RecipesPage";
 import { OnlyAuthenticated, OnlyNotAuthenticated } from "./routes";
 
@@ -38,6 +39,10 @@ function App() {
                 <Route
                     path="/profile/:id"
                     element={<ProfilePage />}
+                />
+                <Route
+                    path="/recipe/:id"
+                    element={<RecipePage />}
                 />
             </Routes>
         </Navigator>

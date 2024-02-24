@@ -26,10 +26,12 @@ export type Recipe = MongooseSchema<{
     isPublic: boolean;
 }>;
 
-export type CreateRecipe = Omit<
-    Recipe,
-    "user" | "_id" | "createdAt" | "updatedAt"
->;
+export type CreateRecipe =
+    & Omit<
+        Recipe,
+        "user" | "_id" | "createdAt" | "updatedAt" | "portraitImage"
+    >
+    & { portraitImage: File };
 
 // Response
 export type RecipeResponse = OE<{ recipe: Recipe }>;
@@ -58,4 +60,9 @@ export type UpdateRecipeRequest = express.RequestHandler<
 export type DeleteRecipeRequest = express.RequestHandler<
     { id: string },
     RecipeResponse
+>;
+
+export type GetUserRecipesRequest = express.RequestHandler<
+    { id: string },
+    RecipesResponse
 >;

@@ -4,7 +4,9 @@ import express from "express";
 import fileUploader from "express-fileupload";
 import morgan from "morgan";
 import ViteExpress from "vite-express";
+import { PORT } from "./config.ts";
 import { connectToDatabase } from "./db.ts";
+import { connectToFirebase } from "./firebase.ts";
 import authRouter from "./routers/auth.routes.ts";
 import recipeRouter from "./routers/recipes.routes.ts";
 import userRouter from "./routers/users.routes.ts";
@@ -26,7 +28,8 @@ app.use("/api/", userRouter);
 
 try {
     connectToDatabase();
-    ViteExpress.listen(app, 3000, () => {
+    connectToFirebase();
+    ViteExpress.listen(app, PORT, () => {
         console.log("Server is running on http://localhost:3000");
     });
 }

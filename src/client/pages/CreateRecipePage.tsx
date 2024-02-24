@@ -1,28 +1,40 @@
 import { CreateRecipe } from "@/types/recipe";
 import { useFormik } from "formik";
+import { useState } from "react";
 import { Badge, Button, Card, FileInput, Form, Input } from "react-daisyui";
 import Select from "react-select";
+import { createRecipeRequest } from "../api/recipes";
 import Tiptap from "../components/inputs/TipTap";
+import { cn } from "../lib/util.ts";
 
 function CreateRecipePage() {
+    const [submitting, setSubmitting] = useState(false);
+
     const formik = useFormik<CreateRecipe>({
         initialValues: {
             title: "",
             summary: "",
             content: "",
-            portraitImage: "",
             tags: [],
             isPublic: false,
+            portraitImage: new File([], "empty"),
         },
         onSubmit: async (values) => {
-            console.log(values);
+            if (submitting) return;
+            setSubmitting(true);
+
+            await createRecipeRequest(values);
+            setSubmitting(false);
         },
     });
 
     return (
         <Card className="flex-shrink-0 max-w-5xl shadow-2xl bg-base-100 w-full">
             <Card.Body>
-                <Form onSubmit={formik.handleSubmit}>
+                <Form
+                    onSubmit={formik.handleSubmit}
+                    encType="multipart/form-data"
+                >
                     <Form.Label title="Title" htmlFor="title" />
                     <Input
                         id="title"
@@ -31,6 +43,7 @@ function CreateRecipePage() {
                         className="text-3xl font-bold input-ghost"
                         onChange={formik.handleChange}
                         value={formik.values.title}
+                        required
                     />
 
                     <Form.Label title="Summary" htmlFor="summary" />
@@ -41,6 +54,7 @@ function CreateRecipePage() {
                         className="input-ghost"
                         onChange={formik.handleChange}
                         value={formik.values.summary}
+                        required
                     />
 
                     <Form.Label title="Description" htmlFor="content" />
@@ -90,6 +104,7 @@ function CreateRecipePage() {
                                 "tags",
                                 tags.map((tag) => tag.value),
                             ) as any}
+                        required
                     />
 
                     <Form.Label
@@ -99,12 +114,28 @@ function CreateRecipePage() {
                     <FileInput
                         id="portraitImage"
                         onChange={(e) => {
-                            console.log(e.target.files?.[0]);
+                            formik.setFieldValue(
+                                "portraitImage",
+                                e.target.files?.[0],
+                            );
                         }}
+                        accept="image/*"
+                        required
                     />
 
-                    <Button type="submit" color="primary" className="mt-4">
+                    <Button
+                        type="submit"
+                        className={cn("mt-4 btn-primary", {
+                            "btn-disabled": submitting,
+                        })}
+                    >
                         Create Recipe!
+                        <span
+                            className={cn("ml-2", {
+                                "loading text-primary": submitting,
+                            })}
+                        >
+                        </span>
                     </Button>
                 </Form>
             </Card.Body>

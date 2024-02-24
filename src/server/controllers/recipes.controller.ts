@@ -3,13 +3,18 @@ import {
     DeleteRecipeRequest,
     GetRecipeRequest,
     GetRecipesRequest,
+    GetUserRecipesRequest,
     UpdateRecipeRequest,
 } from "@/types/recipe.ts";
+import { getDownloadURL } from "firebase/storage";
+import { v4 } from "uuid";
+import { uploadImage } from "../firebase.ts";
 import { resInternalServerError } from "../lib/responses.ts";
 import RecipeModel from "../models/Recipe.ts";
 
 export const createRecipe: CreateRecipeRequest = async (req, res) => {
-    const { title, content, portraitImage, summary, tags } = req.body;
+    const { title, content, summary, tags } = req.body;
+    const portraitImage = req.files?.portraitImage;
 
     if (!title || !content || !portraitImage || !summary || !tags) {
         return res.status(400).json({
@@ -18,13 +23,29 @@ export const createRecipe: CreateRecipeRequest = async (req, res) => {
     }
 
     try {
+        if (!portraitImage || Array.isArray(portraitImage)) {
+            return res.status(400).json({
+                message: "Please upload only an image",
+            });
+        }
+
+        const uploadedImage = await uploadImage(
+            portraitImage,
+            `recipes/${v4()}`,
+        );
+
+        const uploadedPortraitImageURL = await getDownloadURL(
+            uploadedImage.ref,
+        );
+
+        // Save recipe to database
         const newRecipe = await new RecipeModel({
             title,
             content,
-            portraitImage,
+            portraitImage: uploadedPortraitImageURL,
             summary,
             tags,
-            user: req.user._id,
+            user: req.user.id,
         }).save();
 
         res.status(200).json({
@@ -151,5 +172,22 @@ export const deleteRecipe: DeleteRecipeRequest = async (req, res) => {
     catch (e) {
         console.log(e);
         return resInternalServerError(res);
+    }
+};
+
+export const getUserRecipes: GetUserRecipesRequest = async (req, res) => {
+    try {
+        const recipes = await RecipeModel.find({
+            user: req.user.id,
+        });
+
+        res.status(200).json({
+            message: "Recipes fetched successfully",
+            recipes: recipes,
+        });
+    }
+    catch (e) {
+        console.log(e);
+        resInternalServerError(res);
     }
 };

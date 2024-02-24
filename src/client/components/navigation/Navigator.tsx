@@ -18,14 +18,12 @@ export default function Navigator({ children }: PropsWithChildren<{}>) {
     const noAuthItems = () => {
         return (
             <>
-                <Menu horizontal={true}>
-                    <Menu.Item>
-                        <Link to="/login">Login</Link>
-                    </Menu.Item>
-                    <Menu.Item>
-                        <Link to="/register">Register</Link>
-                    </Menu.Item>
-                </Menu>
+                <Menu.Item>
+                    <Link to="/login">Login</Link>
+                </Menu.Item>
+                <Menu.Item>
+                    <Link to="/register">Register</Link>
+                </Menu.Item>
             </>
         );
     };
@@ -62,12 +60,7 @@ export default function Navigator({ children }: PropsWithChildren<{}>) {
             onClickOverlay={toggleVisible}
             side={
                 <Menu className="p-4 w-60 md:w-80 h-full bg-base-200">
-                    <Menu.Item>
-                        <a>Sidebar Item 1</a>
-                    </Menu.Item>
-                    <Menu.Item>
-                        <a>Sidebar Item 2</a>
-                    </Menu.Item>
+                    {isAuthenticated ? authItems() : noAuthItems()}
                 </Menu>
             }
             contentClassName="flex flex-col h-full min-h-screen"
@@ -89,7 +82,9 @@ export default function Navigator({ children }: PropsWithChildren<{}>) {
                     </Link>
                 </div>
                 <div className="flex-none px-2 mx-2 hidden lg:flex gap-2">
-                    {isAuthenticated ? authItems() : noAuthItems()}
+                    <Menu horizontal={true} className="gap-2">
+                        {isAuthenticated ? authItems() : noAuthItems()}
+                    </Menu>
                 </div>
             </Navbar>
             <div className="flex flex-grow items-center justify-center">

@@ -1,12 +1,17 @@
+import { configDotenv } from "dotenv";
 import mongoose from "mongoose";
 
-export function connectToDatabase() {
-    mongoose.connect("mongodb://localhost:27017/utn-mongo").then(() => {
-        console.info("Connected to the database");
-    })
-        .catch(err => {
-            console.error("Unable to connect to the database:", err);
-        });
+configDotenv();
+
+export async function connectToDatabase() {
+    try {
+        await mongoose.connect(process.env.MONGODB_URI!);
+
+        console.log("Connected to MongoDB");
+    }
+    catch (error) {
+        console.error(error);
+    }
 }
 
 export default mongoose;
