@@ -22,8 +22,13 @@ const firebaseConfig = {
 let app: FirebaseApp;
 
 export function connectToFirebase() {
-    app = initializeApp(firebaseConfig);
-    console.log("Firebase app initialized");
+    try {
+        app = initializeApp(firebaseConfig);
+        console.log("Firebase app initialized");
+    }
+    catch (error) {
+        console.error(error);
+    }
 }
 
 export function uploadImage(image: UploadedFile, name: string) {

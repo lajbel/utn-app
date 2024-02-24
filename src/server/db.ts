@@ -1,11 +1,9 @@
-import { configDotenv } from "dotenv";
 import mongoose from "mongoose";
-
-configDotenv();
+import { MONGODB_URI } from "./config.ts";
 
 export async function connectToDatabase() {
     try {
-        await mongoose.connect(process.env.MONGODB_URI!);
+        await mongoose.connect(MONGODB_URI);
 
         console.log("Connected to MongoDB");
     }
