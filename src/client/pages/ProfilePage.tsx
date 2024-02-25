@@ -2,7 +2,7 @@ import { User } from "@/types/user";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getUserRequest } from "../api/user";
 import {
     EditProfileModal,
@@ -17,6 +17,7 @@ function ProfilePage() {
     const { user: authUser } = useAuth();
     const [loading, setLoading] = useState(true);
     const modalRef = useRef<ModalHandles>(null);
+    const navigate = useNavigate();
 
     const handleEditClick = () => {
         modalRef.current?.handleShow();
@@ -34,6 +35,9 @@ function ProfilePage() {
                 setUser(res.data.user);
                 setLoading(false);
             }
+        }).catch(() => {
+            setLoading(false);
+            navigate("/404");
         });
     }, [id]);
 
