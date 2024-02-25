@@ -1,7 +1,7 @@
-import type { UserForLogin, UserForRegister } from "@/types/user";
+import type { UserForCreate, UserForLogin } from "@/types/user";
 import axios from "./axios";
 
-export function registerRequest(user: UserForRegister) {
+export function registerRequest(user: UserForCreate) {
     return axios.post("/auth/register", user);
 }
 

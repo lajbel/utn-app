@@ -1,68 +1,50 @@
-import type * as express from "express";
-import type { OE } from "./responses.ts";
-import type { MongooseSchema } from "./utils.ts";
+import {
+    recipeCreationSchema,
+    recipeSchema,
+    recipeTags,
+} from "@/schemas/recipeSchema.ts";
+import { RecipeInDB } from "@/server/models/Recipe.ts";
+import { RequestHandler } from "express";
+import { z } from "zod";
+import { ErrorResponse, Response } from "./responses.ts";
 
-export type RecipeTags =
-    | "vegetarian"
-    | "vegan"
-    | "gluten-free"
-    | "dairy-free"
-    | "low-carb"
-    | "high-protein"
-    | "low-fat"
-    | "low-calorie"
-    | "healthy"
-    | "quick"
-    | "easy"
-    | "cheap";
-
-export type Recipe = MongooseSchema<{
-    title: string;
-    summary: string;
-    content: string;
-    tags: RecipeTags[];
-    portraitImage: string;
-    user: any;
-    isPublic: boolean;
-}>;
-
-export type CreateRecipe =
-    & Omit<
-        Recipe,
-        "user" | "_id" | "createdAt" | "updatedAt" | "portraitImage"
-    >
-    & { portraitImage: File };
+export type RecipeTags = z.infer<typeof recipeTags>;
+export type Recipe = z.infer<typeof recipeSchema>;
+export type RecipeCreation = z.infer<typeof recipeCreationSchema>;
 
 // Response
-export type RecipeResponse = OE<{ recipe: Recipe }>;
-export type RecipesResponse = OE<{ recipes: Recipe[] }>;
+export type RecipeResponse = Response<{ recipe: RecipeInDB }>;
+export type RecipesResponse = Response<{ recipes: RecipeInDB[] }>;
 
 // Requests
-export type CreateRecipeRequest = express.RequestHandler<
+export type CreateRecipeRequest = RequestHandler<
     {},
-    RecipeResponse,
-    CreateRecipe
+    RecipeResponse | ErrorResponse,
+    RecipeCreation
 >;
 
-export type GetRecipesRequest = express.RequestHandler<{}, RecipesResponse>;
-
-export type GetRecipeRequest = express.RequestHandler<
-    { id: string },
-    RecipeResponse
->;
-
-export type UpdateRecipeRequest = express.RequestHandler<
-    { id: string },
-    RecipeResponse,
-    Partial<CreateRecipe>
->;
-
-export type DeleteRecipeRequest = express.RequestHandler<
-    { id: string },
-    RecipeResponse
->;
-
-export type GetUserRecipesRequest = express.RequestHandler<
-    { id: string },
+export type GetRecipesRequest = RequestHandler<
+    {},
     RecipesResponse
+>;
+
+export type GetRecipeRequest = RequestHandler<
+    { id: string },
+    RecipeResponse | ErrorResponse
+>;
+
+export type UpdateRecipeRequest = RequestHandler<
+    { id: string },
+    RecipeResponse | ErrorResponse,
+    Partial<Recipe>
+>;
+
+export type DeleteRecipeRequest = RequestHandler<
+    { id: string },
+    RecipeResponse | ErrorResponse
+>;
+
+export type GetUserRecipesRequest = RequestHandler<
+    { id: string },
+    RecipesResponse | ErrorResponse
 >;

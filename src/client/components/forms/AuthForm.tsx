@@ -1,9 +1,14 @@
-import type { UserForRegister } from "@/types/user";
+import { loginSchema, registerSchema } from "@/schemas/authSchema";
 import { useFormik } from "formik";
+import { withZodSchema } from "formik-validator-zod";
 import { useEffect } from "react";
-import { Alert, Button, Card, Form, Input } from "react-daisyui";
+import { Button, Card, Form, Input, Loading } from "react-daisyui";
 import { useNavigate } from "react-router-dom";
+import { z } from "zod";
 import { useAuth } from "../../context/AuthContext";
+import { useToast } from "../../context/ToastContext";
+import { cn } from "../../lib/util";
+import FormErrors from "./FormErrors";
 
 type Props = {
     type: "login" | "register";
@@ -11,13 +16,17 @@ type Props = {
 
 function AuthForm({ type = "login" }: Props) {
     const { signUp, signIn, isAuthenticated, errors } = useAuth();
+    const { addToast } = useToast();
     const navigate = useNavigate();
-    const formik = useFormik<UserForRegister>({
+    const formik = useFormik<z.infer<typeof registerSchema>>({
         initialValues: {
             username: "",
             password: "",
             email: "",
         },
+        validate: withZodSchema(
+            type === "login" ? loginSchema : registerSchema,
+        ),
         onSubmit: async (values) => {
             if (type === "login") {
                 await signIn(values);
@@ -28,33 +37,25 @@ function AuthForm({ type = "login" }: Props) {
         },
     });
 
+    const formikErrors = () => {
+        return [
+            ...Object.values(formik.errors),
+        ];
+    };
+
     useEffect(() => {
         if (isAuthenticated) navigate("/");
     }, [isAuthenticated]);
+
+    useEffect(() => {
+        errors.forEach(addToast);
+    }, [errors]);
 
     return (
         <Card className="flex-shrink-0 w-96 max-w-sm shadow-2xl bg-base-100">
             <Card.Body>
                 <Form onSubmit={formik.handleSubmit}>
-                    {errors.length > 0 && (
-                        <Alert status="error">
-                            <ul className="list-disc list-inside">
-                                {errors.map((error, i) => (
-                                    <li key={i}>{error}</li>
-                                ))}
-                            </ul>
-                        </Alert>
-                    )}
-
-                    <Form.Label title="Email" htmlFor="email" />
-                    <Input
-                        id="email"
-                        type="email"
-                        placeholder="example@gmail.com"
-                        className={"input-bordered"}
-                        onChange={formik.handleChange}
-                        value={formik.values.email}
-                    />
+                    <FormErrors errors={formikErrors} />
 
                     {type === "register" && (
                         <>
@@ -66,9 +67,21 @@ function AuthForm({ type = "login" }: Props) {
                                 className="input-bordered"
                                 onChange={formik.handleChange}
                                 value={formik.values.username}
+                                required
                             />
                         </>
                     )}
+
+                    <Form.Label title="Email" htmlFor="email" />
+                    <Input
+                        id="email"
+                        type="email"
+                        placeholder="example@gmail.com"
+                        className={"input-bordered"}
+                        onChange={formik.handleChange}
+                        value={formik.values.email}
+                        required
+                    />
 
                     <Form.Label title="Password" htmlFor="password" />
                     <Input
@@ -78,10 +91,16 @@ function AuthForm({ type = "login" }: Props) {
                         className={"input-bordered"}
                         onChange={formik.handleChange}
                         value={formik.values.password}
+                        required
                     />
 
-                    <Button type="submit" className="mt-8">
+                    <Button
+                        type="submit"
+                        className={cn("mt-4 btn-primary")}
+                        disabled={formik.isSubmitting || !formik.isValid}
+                    >
                         {type === "login" ? "Login" : "Register"}
+                        {formik.isSubmitting && <Loading />}
                     </Button>
                 </Form>
             </Card.Body>

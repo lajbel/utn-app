@@ -1,51 +1,47 @@
-import type * as express from "express";
-import type { OE } from "./responses.ts";
-import type { MongooseSchema } from "./utils.ts";
+import {
+    loginSchema,
+    registerSchema,
+    userSchema,
+} from "@/schemas/authSchema.ts";
+import { RequestHandler } from "express";
+import { z } from "zod";
+import { ErrorResponse } from "./responses.ts";
+import { Response } from "./responses.ts";
 
 // Type
-export type User = MongooseSchema<{
-    email: string;
-    password: string;
-    username: string;
-    profilePhoto: string;
-    profileDescription: string;
-}>;
-
-export type UserForCreate = {
-    email: string;
-    password: string;
-    username: string;
-    profilePhoto?: File;
-    profielDescription?: string;
-};
-
-export type UserWithoutPassword = Omit<User, "password">;
-export type UserForRegister = Pick<User, "email" | "password" | "username">;
-export type UserForLogin = Pick<User, "email" | "password">;
+export type User = z.infer<typeof userSchema>;
+export type UserForCreate = z.infer<typeof registerSchema>;
+export type UserForLogin = z.infer<typeof loginSchema>;
 
 // Responses
-export type UserResponse = OE<{ user: UserWithoutPassword }>;
+export type UserResponse = Response<{ user: User }>;
 
 // Requests
-export type RegisterRequest = express.RequestHandler<
+export type RegisterRequest = RequestHandler<
     {},
-    UserResponse,
-    UserForRegister
+    UserResponse | ErrorResponse,
+    UserForCreate
 >;
 
-export type LoginRequest = express.RequestHandler<
+export type LoginRequest = RequestHandler<
     {},
-    UserResponse,
+    UserResponse | ErrorResponse,
     UserForLogin
 >;
 
-export type VerifyRequest = express.RequestHandler<
+export type VerifyRequest = RequestHandler<
     {},
-    UserResponse,
+    UserResponse | ErrorResponse,
     {}
 >;
 
-export type GetUserRequest = express.RequestHandler<
+export type GetUserRequest = RequestHandler<
     { id: string },
-    UserResponse
+    UserResponse | ErrorResponse
+>;
+
+export type UpdateUserRequest = RequestHandler<
+    { id: string },
+    UserResponse | ErrorResponse,
+    Partial<User>
 >;

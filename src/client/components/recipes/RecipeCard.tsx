@@ -1,30 +1,34 @@
-import { Recipe } from "@/types/recipe";
-import { faBook, faPencil } from "@fortawesome/free-solid-svg-icons";
+import { RecipeInDB } from "@/server/models/Recipe";
+import {
+    faBook,
+    faPencil,
+    faPlusCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Card } from "react-daisyui";
 import { Link } from "react-router-dom";
 import RecipeTag from "./RecipeTag";
 
 type Props = {
-    recipe: Recipe;
+    recipe: RecipeInDB;
 };
 
-function RecipeCard({ recipe }: Props) {
+export const RecipeCard: React.FC<Props> = ({ recipe }) => {
     const {
         title,
         summary,
         portraitImage,
         tags,
-        user: { username },
+        user,
         isPublic,
     } = recipe;
 
     return (
-        <Card className="bg-base-200 max-w-80 shadow-lg" compact>
+        <Card className="bg-base-100 w-full shadow-xl" compact>
             <Card.Image
                 src={portraitImage}
                 alt="Recipe image"
-                className="max-h-70 object-cover w-full shadow-inner aspect-square"
+                className="object-cover min-h-80 w-full bg-base-200"
             />
             <Card.Body>
                 <h2 className="text-xl font-bold text-balance">
@@ -34,33 +38,35 @@ function RecipeCard({ recipe }: Props) {
                     {summary}
                 </p>
                 <div className="flex gap-1">
-                    {/** @ts-ignore */}
-                    {tags.split(",").map((t: any) => (
-                        <RecipeTag key={t} name={t} />
+                    {tags?.map((t, i) => (
+                        i < 2 && <RecipeTag key={i} name={t} />
                     ))}
                 </div>
 
-                {isPublic && (
-                    <a className="btn btn-ghost w-fit" href="/profile">
+                {!isPublic && (
+                    <Link
+                        className="btn btn-ghost w-fit"
+                        to={`/profile/${user?._id}`}
+                    >
                         <img
-                            src="https://images.unsplash.com/photo-1589119908995-c6837fa14848?q=80&w=2080&auto=format&fit=crop&ixlib=rb-1.2.1&ixid=MnwyMDA0M3wwfDF8c2VhcmNofDEwfHxwaG90by1wYWdlfHx8fHx8fA%3D%3D"
+                            src={user?.profilePhoto}
                             alt="Daniel"
                             className="w-6 h-6 rounded-full"
                         />
-                        By {username}
-                    </a>
+                        By {user?.username}
+                    </Link>
                 )}
 
-                <div className="card-actions">
+                <div className="card-actions join gap-0">
                     <Link
-                        className="btn btn-primary flex-1"
+                        className="btn btn-primary flex-1 join-item"
                         to={`/recipe/${recipe._id}`}
                     >
                         <FontAwesomeIcon icon={faBook} />
                         Read
                     </Link>
                     <Link
-                        className="btn btn-warning"
+                        className="btn btn-warning join-item"
                         to={`/edit/${recipe._id}`}
                     >
                         <FontAwesomeIcon icon={faPencil} />
@@ -70,6 +76,28 @@ function RecipeCard({ recipe }: Props) {
             </Card.Body>
         </Card>
     );
-}
+};
+
+export const NewRecipeCard: React.FC = () => {
+    return (
+        <Card className="bg-base-100 w-full shadow-xl" compact>
+            <div className="object-cover min-h-80 w-full bg-base-200" />
+            <Card.Body className="items-center justify-center">
+                <Link
+                    className="btn btn-ghost w-full h-full"
+                    to="/create"
+                >
+                    <span className="sr-only">
+                        Create a new recipe
+                    </span>
+                    <FontAwesomeIcon
+                        icon={faPlusCircle}
+                        className="text-4xl"
+                    />
+                </Link>
+            </Card.Body>
+        </Card>
+    );
+};
 
 export default RecipeCard;

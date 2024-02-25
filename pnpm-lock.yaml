@@ -20,6 +20,9 @@ dependencies:
   '@fortawesome/react-fontawesome':
     specifier: ^0.2.0
     version: 0.2.0(@fortawesome/fontawesome-svg-core@6.5.1)(react@18.2.0)
+  '@tiptap/extension-placeholder':
+    specifier: ^2.2.4
+    version: 2.2.4(@tiptap/core@2.2.3)(@tiptap/pm@2.2.3)
   '@tiptap/pm':
     specifier: ^2.2.3
     version: 2.2.3
@@ -59,6 +62,9 @@ dependencies:
   formik:
     specifier: ^2.4.5
     version: 2.4.5(react@18.2.0)
+  formik-validator-zod:
+    specifier: ^2.0.0
+    version: 2.0.0(formik@2.4.5)(zod@3.22.4)
   js-cookie:
     specifier: ^3.0.5
     version: 3.0.5
@@ -1719,6 +1725,16 @@ packages:
       '@tiptap/core': 2.2.3(@tiptap/pm@2.2.3)
     dev: false
 
+  /@tiptap/extension-placeholder@2.2.4(@tiptap/core@2.2.3)(@tiptap/pm@2.2.3):
+    resolution: {integrity: sha512-UL4Fn9T33SoS7vdI3NnSxBJVeGUIgCIutgXZZ5J8CkcRoDIeS78z492z+6J+qGctHwTd0xUL5NzNJI82HfiTdg==}
+    peerDependencies:
+      '@tiptap/core': ^2.0.0
+      '@tiptap/pm': ^2.0.0
+    dependencies:
+      '@tiptap/core': 2.2.3(@tiptap/pm@2.2.3)
+      '@tiptap/pm': 2.2.3
+    dev: false
+
   /@tiptap/extension-strike@2.2.3(@tiptap/core@2.2.3):
     resolution: {integrity: sha512-3wwFk01ociZajRzD08hp4j/4isFUeD6BIkKPDnZeGD5HKPdTOaDciE3dJ3JaZZrRZPPdPV3yMt5hkBOapqEKzQ==}
     peerDependencies:
@@ -2966,6 +2982,16 @@ packages:
       mime-types: 2.1.35
     dev: false
 
+  /formik-validator-zod@2.0.0(formik@2.4.5)(zod@3.22.4):
+    resolution: {integrity: sha512-QGqnG4GTPy3x3eHs7mnssxG4j8YtFxgCI1r0KJgneO4o/TTtISa6JF7fllRyR4fuvz2Vos/WqFbr6CxmLoodEg==}
+    peerDependencies:
+      formik: ^2.2.9
+      zod: ^3.19.1
+    dependencies:
+      formik: 2.4.5(react@18.2.0)
+      zod: 3.22.4
+    dev: false
+
   /formik@2.4.5(react@18.2.0):
     resolution: {integrity: sha512-Gxlht0TD3vVdzMDHwkiNZqJ7Mvg77xQNfmBRrNtvzcHZs72TJppSTDKHpImCMJZwcWPBJ8jSQQ95GJzXFf1nAQ==}
     peerDependencies:
@@ -3364,6 +3390,7 @@ packages:
 
   /isexe@2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
+    requiresBuild: true
 
   /isobject@3.0.1:
     resolution: {integrity: sha512-WhB9zCku7EGTj/HQQRz5aUQEUeoQZH2bWcltRErOpymJ4boYE6wL9Tbr23krRPSZ+C5zqNSrSw+Cc7sZZ4b7vg==}

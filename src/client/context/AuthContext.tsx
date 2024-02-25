@@ -87,8 +87,10 @@ export const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
             catch (error) {
                 setIsAuthenticated(false);
                 setLoading(false);
+                setUser(undefined);
             }
         };
+
         checkLogin();
     }, []);
 

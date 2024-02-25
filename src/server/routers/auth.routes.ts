@@ -1,7 +1,7 @@
+import { loginSchema, registerSchema } from "@/schemas/authSchema.ts";
 import { Router } from "express";
 import * as authController from "../controllers/auth.controller.ts";
 import { validateSchema } from "../middlewares/validateSchema.ts";
-import { loginSchema, registerSchema } from "../schemas/authSchemas.ts";
 
 const router = Router();
 

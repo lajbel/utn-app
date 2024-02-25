@@ -1,9 +1,9 @@
 import { Route, Routes } from "react-router-dom";
 import Navigator from "./components/navigation/Navigator";
 import AuthPage from "./pages/AuthPage";
-import CreateRecipePage from "./pages/CreateRecipePage";
 import LandPage from "./pages/LandPage";
 import ProfilePage from "./pages/ProfilePage";
+import RecipeFormPage from "./pages/RecipeFormPage";
 import RecipePage from "./pages/RecipePage";
 import RecipesPage from "./pages/RecipesPage";
 import { OnlyAuthenticated, OnlyNotAuthenticated } from "./routes";
@@ -33,7 +33,11 @@ function App() {
                     />
                     <Route
                         path="/create"
-                        element={<CreateRecipePage />}
+                        element={<RecipeFormPage type="create" />}
+                    />
+                    <Route
+                        path="/edit/:id"
+                        element={<RecipeFormPage type="edit" />}
                     />
                 </Route>
                 <Route

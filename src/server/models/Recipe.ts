@@ -1,10 +1,12 @@
-import type { Recipe } from "@/types/recipe.ts";
-import { Model, SchemaTypes } from "mongoose";
+import { Recipe } from "@/types/recipe.ts";
+import { Model, SchemaTimestampsConfig, SchemaTypes } from "mongoose";
 import mongoose from "../db.ts";
 
-export type RecipeModel = Model<Recipe>;
+export type RecipeInDB = Recipe & SchemaTimestampsConfig & {
+    _id: string;
+};
 
-const RecipeSchema = new mongoose.Schema<Recipe, RecipeModel>(
+const RecipeSchema = new mongoose.Schema<Recipe, Model<Recipe>>(
     {
         title: {
             type: SchemaTypes.String,
@@ -23,12 +25,16 @@ const RecipeSchema = new mongoose.Schema<Recipe, RecipeModel>(
             required: true,
         },
         tags: {
-            type: SchemaTypes.Mixed,
+            type: [SchemaTypes.String],
             required: true,
         },
         user: {
             type: SchemaTypes.ObjectId,
             ref: "User",
+        },
+        isPublic: {
+            type: SchemaTypes.Boolean,
+            default: false,
         },
     },
     {
@@ -36,5 +42,9 @@ const RecipeSchema = new mongoose.Schema<Recipe, RecipeModel>(
     },
 );
 
-const RecipeModel = mongoose.model<Recipe, RecipeModel>("Recipe", RecipeSchema);
+const RecipeModel = mongoose.model<Recipe, Model<Recipe>>(
+    "Recipe",
+    RecipeSchema,
+);
+
 export default RecipeModel;

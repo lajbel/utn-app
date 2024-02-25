@@ -1,5 +1,5 @@
-import { CreateRecipe, Recipe } from "@/types/recipe";
-import axios from "./axios";
+import { Recipe, RecipeCreation, RecipeResponse } from "@/types/recipe";
+import axios, { toFormData } from "./axios";
 
 const BASE_URL = "/recipes";
 
@@ -7,20 +7,17 @@ export const getRecipesRequest = async () => {
     return axios.get(BASE_URL);
 };
 
-export const createRecipeRequest = async (recipe: CreateRecipe) => {
-    // intead of json, we are sending form data
-    const formData = new FormData();
-
-    for (const key in recipe) {
-        // @ts-ignore
-        formData.append(key, recipe[key]);
-    }
-
-    return axios.post(BASE_URL, formData);
+export const createRecipeRequest = async (
+    recipe: RecipeCreation,
+) => {
+    return axios.post(BASE_URL, toFormData(recipe));
 };
 
-export const updateRecipeRequest = async (recipe: Partial<Recipe>) => {
-    return axios.put(`${BASE_URL}/${recipe._id}`, recipe);
+export const updateRecipeRequest = async (
+    id: string,
+    recipe: Partial<RecipeCreation>,
+) => {
+    return axios.put(`${BASE_URL}/${id}`, recipe);
 };
 
 export const deleteRecipeRequest = async (id: string) => {
@@ -28,7 +25,7 @@ export const deleteRecipeRequest = async (id: string) => {
 };
 
 export const getRecipeRequest = async (id: string) => {
-    return axios.get(`${BASE_URL}/${id}`);
+    return axios.get<RecipeResponse>(`${BASE_URL}/${id}`);
 };
 
 export const getUserRecipesRequest = async (id: string) => {

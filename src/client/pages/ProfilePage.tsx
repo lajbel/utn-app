@@ -1,4 +1,6 @@
 import { User } from "@/types/user";
+import { faPencil } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getUserRequest } from "../api/user";
@@ -6,17 +8,26 @@ import {
     EditProfileModal,
     ModalHandles,
 } from "../components/forms/EditProfileForm";
+import { useAuth } from "../context/AuthContext";
 import { cn } from "../lib/util";
 
 function ProfilePage() {
     const { id } = useParams();
     const [user, setUser] = useState<User | null>(null);
+    const { user: authUser } = useAuth();
     const [loading, setLoading] = useState(true);
     const modalRef = useRef<ModalHandles>(null);
 
     const handleEditClick = () => {
         modalRef.current?.handleShow();
     };
+
+    const handleUserUpdate = (newUser: User) => {
+        console.log(newUser);
+        setUser(newUser);
+    };
+
+    const isSameUser = authUser?._id === id;
 
     useEffect(() => {
         getUserRequest(id!).then((res) => {
@@ -33,6 +44,7 @@ function ProfilePage() {
                 <EditProfileModal
                     ref={modalRef}
                     user={user}
+                    onUserUpdate={handleUserUpdate}
                 />
             )}
 
@@ -76,14 +88,17 @@ function ProfilePage() {
                 </div>
             </div>
 
-            <div>
-                <button
-                    onClick={handleEditClick}
-                    className="btn btn-primary"
-                >
-                    Edit Profile
-                </button>
-            </div>
+            {isSameUser && (
+                <div>
+                    <button
+                        onClick={handleEditClick}
+                        className="btn btn-primary"
+                    >
+                        <FontAwesomeIcon icon={faPencil} />
+                        Edit Profile
+                    </button>
+                </div>
+            )}
         </div>
     );
 }

@@ -16,27 +16,26 @@ export const createRecipe: CreateRecipeRequest = async (req, res) => {
     const { title, content, summary, tags } = req.body;
     const portraitImage = req.files?.portraitImage;
 
-    if (!title || !content || !portraitImage || !summary || !tags) {
-        return res.status(400).json({
-            message: "Please enter all fields",
-        });
-    }
-
     try {
-        if (!portraitImage || Array.isArray(portraitImage)) {
-            return res.status(400).json({
-                message: "Please upload only an image",
-            });
+        let uploadedPortraitImageURL =
+            "https://firebasestorage.googleapis.com/v0/b/utn-app-74c14.appspot.com/o/DefaultRecipe.png?alt=media&token=8d822e06-cd3f-4300-ba5c-28590d8b2271";
+
+        if (portraitImage) {
+            if (Array.isArray(portraitImage)) {
+                return res.status(400).json({
+                    message: "Please upload only an image",
+                });
+            }
+
+            const uploadedImage = await uploadImage(
+                portraitImage,
+                `recipes/${v4()}`,
+            );
+
+            uploadedPortraitImageURL = await getDownloadURL(
+                uploadedImage.ref,
+            );
         }
-
-        const uploadedImage = await uploadImage(
-            portraitImage,
-            `recipes/${v4()}`,
-        );
-
-        const uploadedPortraitImageURL = await getDownloadURL(
-            uploadedImage.ref,
-        );
 
         // Save recipe to database
         const newRecipe = await new RecipeModel({
@@ -44,7 +43,7 @@ export const createRecipe: CreateRecipeRequest = async (req, res) => {
             content,
             portraitImage: uploadedPortraitImageURL,
             summary,
-            tags,
+            tags: tags?.pop(),
             user: req.user.id,
         }).save();
 
@@ -68,7 +67,7 @@ export const getRecipes: GetRecipesRequest = async (req, res) => {
 
         res.status(200).json({
             message: "Recipes fetched successfully",
-            recipes: recipes,
+            recipes: recipes.map((recipe) => recipe.toObject()),
         });
     }
     catch (e) {
@@ -104,27 +103,13 @@ export const getRecipe: GetRecipeRequest = async (req, res) => {
 };
 
 export const updateRecipe: UpdateRecipeRequest = async (req, res) => {
-    const { title, content, portraitImage, summary, tags } = req.body;
+    const { title, content, summary, tags } = req.body;
     const { id } = req.params;
+    const portraitImage = req.files?.portraitImage;
     const user = req.user;
 
-    if (!title || !content || !portraitImage || !summary || !tags) {
-        return res.status(400).json({
-            message: "Please enter fields",
-        });
-    }
-
     try {
-        const recipe = await RecipeModel.findOneAndUpdate({
-            _id: id,
-            user: user._id,
-        }, {
-            title,
-            content,
-            portraitImage,
-            summary,
-            tags,
-        });
+        const recipe = await RecipeModel.findById(id);
 
         if (!recipe) {
             return res.status(404).json({
@@ -132,16 +117,53 @@ export const updateRecipe: UpdateRecipeRequest = async (req, res) => {
             });
         }
 
+        if (recipe.user.toString() !== user.id) {
+            return res.status(403).json({
+                message: "You are not authorized to update this recipe",
+            });
+        }
+
+        let uploadedPortraitImageURL = recipe.portraitImage;
+
+        if (portraitImage) {
+            if (Array.isArray(portraitImage)) {
+                return res.status(400).json({
+                    message: "Please upload only an image",
+                });
+            }
+
+            const uploadedImage = await uploadImage(
+                portraitImage,
+                `recipes/${v4()}`,
+            );
+
+            uploadedPortraitImageURL = await getDownloadURL(
+                uploadedImage.ref,
+            );
+        }
+
+        const updatedRecipe = {
+            title,
+            content,
+            portraitImage: uploadedPortraitImageURL,
+            summary,
+            tags: tags?.pop(),
+        };
+
+        const updatedRecipeInDB = await RecipeModel.findByIdAndUpdate(
+            id,
+            updatedRecipe,
+            { new: true },
+        );
+
         res.status(200).json({
             message: "Recipe updated successfully",
-            recipe: recipe.toObject(),
+            recipe: updatedRecipeInDB?.toObject(),
         });
     }
     catch (e) {
         console.log(e);
-        return res.status(500).json({
-            message: "Internal Server Error",
-        });
+        resInternalServerError(res);
     }
 };
 
@@ -157,7 +179,7 @@ export const deleteRecipe: DeleteRecipeRequest = async (req, res) => {
             });
         }
 
-        if (recipe.user.toString() !== req.user._id.toString()) {
+        if (recipe.user.toString() !== req.user.id) {
             return res.status(403).json({
                 message: "You are not authorized to delete this recipe",
             });
@@ -179,11 +201,11 @@ export const getUserRecipes: GetUserRecipesRequest = async (req, res) => {
     try {
         const recipes = await RecipeModel.find({
             user: req.user.id,
-        });
+        }).populate("user", "username profilePhoto");
 
         res.status(200).json({
             message: "Recipes fetched successfully",
-            recipes: recipes,
+            recipes: recipes.map((recipe) => recipe.toObject()),
         });
     }
     catch (e) {

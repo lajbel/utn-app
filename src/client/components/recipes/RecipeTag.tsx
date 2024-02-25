@@ -1,4 +1,4 @@
-import { RecipeTags } from "@/types/Models";
+import { RecipeTags } from "@/types/recipe";
 import { Badge, BadgeProps } from "react-daisyui";
 
 export const tags: Record<RecipeTags, string> = {
@@ -25,7 +25,6 @@ function RecipeTag(props: Props) {
         <Badge
             className="mr-1"
             color="secondary"
-            size="lg"
             {...props}
         >
             {tags[props.name]}

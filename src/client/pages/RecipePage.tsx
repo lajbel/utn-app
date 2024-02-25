@@ -2,6 +2,7 @@ import { Recipe } from "@/types/recipe";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getRecipeRequest } from "../api/recipes";
+import RecipeTag from "../components/recipes/RecipeTag";
 
 function RecipePage() {
     const { id } = useParams();
@@ -27,6 +28,11 @@ function RecipePage() {
                 <div className="p-4 rounded-t-lg w-full h-full absolute text-white flex flex-col justify-end gap-2">
                     <h1 className="text-3xl font-bold">{recipe?.title}</h1>
                     <p className="text-lg">{recipe?.summary}</p>
+                    <div className="flex gap-1">
+                        {recipe?.tags.map((t, i) => (
+                            i < 2 && <RecipeTag key={i} name={t} />
+                        ))}
+                    </div>
                 </div>
             </header>
 

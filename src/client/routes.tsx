@@ -2,7 +2,7 @@ import { Loading } from "react-daisyui";
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
 
-const LoadingDots = () => {
+export const LoadingDots = () => {
     return (
         <span className="loading loading-dots loading-lg text-primary"></span>
     );

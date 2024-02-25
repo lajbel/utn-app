@@ -1,15 +1,15 @@
-import type { User, UserForCreate } from "@/types/user";
-import axios from "./axios";
+import type { User, UserResponse } from "@/types/user";
+import axios, { toFormData } from "./axios";
+
+const BASE_URL = "/users";
 
 export function getUserRequest(id: string) {
-    return axios.get<{
-        user: User;
-    }>(`/users/${id}`);
+    return axios.get<UserResponse>(`${BASE_URL}/${id}`);
 }
 
 export function updateUserRequest(
     id: string,
-    updateUser: Partial<UserForCreate>,
+    updateUser: Partial<User>,
 ) {
-    return axios.put(`/users/${id}`, updateUser);
+    return axios.put<UserResponse>(`${BASE_URL}/${id}`, toFormData(updateUser));
 }

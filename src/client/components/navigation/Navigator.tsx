@@ -19,10 +19,12 @@ export default function Navigator({ children }: PropsWithChildren<{}>) {
         return (
             <>
                 <Menu.Item>
-                    <Link to="/login">Login</Link>
+                    <Link to="/login" className="btn btn-ghost">Login</Link>
                 </Menu.Item>
                 <Menu.Item>
-                    <Link to="/register">Register</Link>
+                    <Link to="/register" className="btn btn-ghost">
+                        Register
+                    </Link>
                 </Menu.Item>
             </>
         );

@@ -20,7 +20,8 @@ const UserSchema = new mongoose.Schema<User, UserModel>(
         },
         profilePhoto: {
             type: SchemaTypes.String,
-            default: "https://i.imgur.com/W0bDIzJ.png",
+            default:
+                "https://firebasestorage.googleapis.com/v0/b/utn-app-74c14.appspot.com/o/DefaultAvatar.png?alt=media&token=6364b743-a85a-4417-b9e7-f257fef6ce7f",
         },
         profileDescription: {
             type: SchemaTypes.String,

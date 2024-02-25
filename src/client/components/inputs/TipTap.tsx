@@ -1,26 +1,26 @@
+import Placeholder from "@tiptap/extension-placeholder";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { type FormEventHandler } from "react";
 import TextEditorToolbar from "./TextEditorToolbar";
 
 type Props = {
     onChange: (value: string) => void;
+    content?: string;
 };
 
 const extensions = [
     StarterKit,
+    Placeholder.configure({ placeholder: "Write something..." }),
 ];
 
-const content = "<p>your description...</p>";
-
-function Tiptap({ onChange }: Props) {
+const Tiptap: React.FC<Props> = ({ onChange, content = "" }) => {
     const editor = useEditor({
         extensions,
         content,
         editorProps: {
             attributes: {
                 class:
-                    "textarea textarea-bordered prose rounded w-full min-w-full min-h-40 max-h-96 max-w-full h-96 overflow-y-auto",
+                    "textarea textarea-bordered prose prose-sm w-full min-w-full max-h-40 max-w-full h-96 overflow-y-auto",
             },
         },
         onUpdate: ({ editor }) => {
@@ -36,6 +36,6 @@ function Tiptap({ onChange }: Props) {
             />
         </>
     );
-}
+};
 
 export default Tiptap;

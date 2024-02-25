@@ -32,7 +32,8 @@ export default function TextEditorToolbar({ editor }: Props) {
                         />
                     </div>
                 }
-                onChange={() => editor.chain().focus().toggleBold().run()}
+                onClick={() => editor.chain().focus().toggleBold().run()}
+                active={editor.isActive("bold")}
             />
 
             <Swap
@@ -50,7 +51,8 @@ export default function TextEditorToolbar({ editor }: Props) {
                         />
                     </div>
                 }
-                onChange={() => editor.chain().focus().toggleItalic().run()}
+                onClick={() => editor.chain().focus().toggleItalic().run()}
+                active={editor.isActive("italic")}
             />
 
             <Swap
@@ -68,7 +70,8 @@ export default function TextEditorToolbar({ editor }: Props) {
                         />
                     </div>
                 }
-                onChange={() => editor.chain().focus().toggleStrike().run()}
+                onClick={() => editor.chain().focus().toggleStrike().run()}
+                active={editor.isActive("strike")}
             />
         </div>
     );

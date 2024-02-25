@@ -5,7 +5,6 @@ import {
     useCallback,
     useImperativeHandle,
     useRef,
-    useState,
 } from "react";
 import { Button, FileInput, Form, Input, Modal } from "react-daisyui";
 import { updateUserRequest } from "../../api/user";
@@ -17,6 +16,7 @@ export type ProfileFormHandles = {
 
 export type Props = {
     user: User;
+    onUserUpdate?: (user: User) => void;
 };
 
 const EditProfileForm = forwardRef<ProfileFormHandles, Props>((props, ref) => {
@@ -24,15 +24,17 @@ const EditProfileForm = forwardRef<ProfileFormHandles, Props>((props, ref) => {
     const formik = useFormik({
         initialValues: {
             profileDescription: props.user.profileDescription || "",
-            profilePhoto: new File([], "empty"),
+            profilePhoto: undefined,
         },
-        onSubmit: (values) => {
-            updateUserRequest(user?._id!, values);
+        onSubmit: async (values) => {
+            const { data } = await updateUserRequest(user?._id!, values);
+            props.onUserUpdate?.(data.user);
         },
     });
 
     useImperativeHandle(ref, () => ({
         handleSubmit: formik.handleSubmit,
+        newProfile: formik.values,
     }));
 
     return (
@@ -47,6 +49,7 @@ const EditProfileForm = forwardRef<ProfileFormHandles, Props>((props, ref) => {
                     required
                     maxLength={100}
                     onChange={formik.handleChange}
+                    value={formik.values.profileDescription}
                 />
 
                 <Form.Label title="Profile Photo" htmlFor="profilePhoto" />
@@ -68,6 +71,7 @@ const EditProfileForm = forwardRef<ProfileFormHandles, Props>((props, ref) => {
 
 export type ModalHandles = {
     handleShow: () => void;
+    form: ProfileFormHandles | null;
 };
 
 export const EditProfileModal = forwardRef<ModalHandles, Props>(
@@ -86,6 +90,7 @@ export const EditProfileModal = forwardRef<ModalHandles, Props>(
 
         useImperativeHandle(ref, () => ({
             handleShow,
+            form: formRef.current,
         }));
 
         return (
@@ -94,6 +99,7 @@ export const EditProfileModal = forwardRef<ModalHandles, Props>(
                 <Modal.Body>
                     <EditProfileForm
                         user={props.user}
+                        onUserUpdate={props.onUserUpdate}
                         ref={formRef}
                     />
                 </Modal.Body>

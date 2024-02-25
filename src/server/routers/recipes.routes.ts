@@ -1,5 +1,7 @@
+import { recipeCreationSchema } from "@/schemas/recipeSchema.ts";
 import { Router } from "express";
 import * as recipesController from "../controllers/recipes.controller.ts";
+import { validateSchema } from "../middlewares/validateSchema.ts";
 import { verifyAuth } from "../middlewares/verifyAuth.ts";
 
 const router = Router();
@@ -7,6 +9,7 @@ const router = Router();
 router.post(
     "/recipes",
     verifyAuth,
+    validateSchema(recipeCreationSchema),
     recipesController.createRecipe,
 );
 
