@@ -1,5 +1,6 @@
-import { Recipe, RecipeCreation, RecipeResponse } from "@/types/recipe";
-import axios, { toFormData } from "./axios";
+import { RecipeCreation, RecipeResponse } from "@/types/recipe";
+import { toFormData } from "axios";
+import axios from "./axios";
 
 const BASE_URL = "/recipes";
 

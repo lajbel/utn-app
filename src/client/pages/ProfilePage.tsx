@@ -23,7 +23,6 @@ function ProfilePage() {
     };
 
     const handleUserUpdate = (newUser: User) => {
-        console.log(newUser);
         setUser(newUser);
     };
 

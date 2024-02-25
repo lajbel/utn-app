@@ -2,7 +2,6 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import express from "express";
 import fileUploader from "express-fileupload";
-import morgan from "morgan";
 import ViteExpress from "vite-express";
 import { PORT } from "./config.ts";
 import { connectToDatabase } from "./db.ts";
@@ -14,17 +13,14 @@ import userRouter from "./routers/users.routes.ts";
 dotenv.config();
 const app = express();
 
-app.use(
-    morgan("dev", { skip: (req, res) => !req.originalUrl.startsWith("/api") }),
-);
 app.use(cookieParser());
 app.use(express.json());
 app.use(fileUploader());
 
 // Routes
 app.use("/api/auth", authRouter);
-app.use("/api/", recipeRouter);
-app.use("/api/", userRouter);
+app.use("/api/recipes", recipeRouter);
+app.use("/api/users", userRouter);
 
 try {
     connectToDatabase();

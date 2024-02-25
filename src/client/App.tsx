@@ -1,5 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import Navigator from "./components/navigation/Navigator";
+import NotFoundPage from "./pages/404Page";
 import AuthPage from "./pages/AuthPage";
 import LandPage from "./pages/LandPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -47,6 +48,10 @@ function App() {
                 <Route
                     path="/recipe/:id"
                     element={<RecipePage />}
+                />
+                <Route
+                    path="*"
+                    element={<NotFoundPage />}
                 />
             </Routes>
         </Navigator>

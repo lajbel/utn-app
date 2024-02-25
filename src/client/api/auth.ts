@@ -1,14 +1,16 @@
 import type { UserForCreate, UserForLogin } from "@/types/user";
 import axios from "./axios";
 
+const BASE_URL = "/auth";
+
 export function registerRequest(user: UserForCreate) {
-    return axios.post("/auth/register", user);
+    return axios.post(`${BASE_URL}/register`, user);
 }
 
 export function loginRequest(user: UserForLogin) {
-    return axios.post("/auth/login", user);
+    return axios.post(`${BASE_URL}/login`, user);
 }
 
 export function verifyToken() {
-    return axios.get("/auth/verify");
+    return axios.get(`${BASE_URL}/verify`);
 }

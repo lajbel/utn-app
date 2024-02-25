@@ -4,7 +4,7 @@ import { faSave, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useFormik } from "formik";
 import { withZodSchema } from "formik-validator-zod";
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { Badge, Button, FileInput, Form, Input } from "react-daisyui";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
@@ -12,7 +12,6 @@ import { RecipeCreation } from "../../../types/recipe.ts";
 import {
     createRecipeRequest,
     deleteRecipeRequest,
-    getRecipeRequest,
     updateRecipeRequest,
 } from "../../api/recipes";
 import Tiptap from "../../components/inputs/TipTap";
@@ -43,22 +42,15 @@ const RecipeForm: FC<Props> = ({ type, recipe: oldRecipe }) => {
             if (submitting) return;
             setSubmitting(true);
 
-            // Vegetarian hack: Form Data only accepts arrays with more than 1 element
-            // so we push a dummy value to the array and then remove it
             if (type === "create") {
-                await createRecipeRequest({
-                    ...values,
-                    tags: [...(values.tags!), "vegetarian"],
-                });
+                const newRecipe = await createRecipeRequest(values);
+                navigate(`/recipe/${newRecipe.data?.recipe._id}`);
             }
             else {
-                await updateRecipeRequest(oldRecipe?._id!, {
-                    ...values,
-                    tags: [...(values.tags!), "vegetarian"],
-                });
+                await updateRecipeRequest(oldRecipe?._id!, values);
+                navigate(`/recipe/${oldRecipe?._id}`);
             }
 
-            navigate(`/recipe/${oldRecipe?._id}`);
             setSubmitting(false);
         },
     });

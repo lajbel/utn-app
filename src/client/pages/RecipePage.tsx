@@ -1,49 +1,32 @@
-import { Recipe } from "@/types/recipe";
+import { RecipeInDB } from "@/server/models/Recipe";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getRecipeRequest } from "../api/recipes";
-import RecipeTag from "../components/recipes/RecipeTag";
+import RecipeView from "../components/recipes/RecipeView";
+import { LoadingDots } from "../routes";
 
 function RecipePage() {
     const { id } = useParams();
-    const [recipe, setRecipe] = useState<Recipe | null>(null);
+    const [recipe, setRecipe] = useState<RecipeInDB | undefined>(undefined);
+    const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         getRecipeRequest(id!).then((res) => {
             if (res.data) {
+                setLoading(false);
                 setRecipe(res.data.recipe);
             }
+        }).catch((err) => {
+            navigate("/404");
+            setLoading(false);
         });
     }, [id]);
 
     return (
-        <div className="max-w-6xl w-full h-full">
-            <header className="flex flex-col max-w-6xl w-full relative">
-                <img
-                    src={recipe?.portraitImage}
-                    alt={recipe?.title}
-                    className="w-full h-56 object-cover rounded-none filter brightness-50"
-                />
-
-                <div className="p-4 rounded-t-lg w-full h-full absolute text-white flex flex-col justify-end gap-2">
-                    <h1 className="text-3xl font-bold">{recipe?.title}</h1>
-                    <p className="text-lg">{recipe?.summary}</p>
-                    <div className="flex gap-1">
-                        {recipe?.tags.map((t, i) => (
-                            i < 2 && <RecipeTag key={i} name={t} />
-                        ))}
-                    </div>
-                </div>
-            </header>
-
-            <main className="p-4">
-                <div
-                    className="prose max-w-none"
-                    dangerouslySetInnerHTML={{ __html: recipe?.content! }}
-                >
-                </div>
-            </main>
-        </div>
+        <>
+            {loading ? <LoadingDots /> : <RecipeView recipe={recipe} />}
+        </>
     );
 }
 

@@ -1,5 +1,6 @@
 import type { User, UserResponse } from "@/types/user";
-import axios, { toFormData } from "./axios";
+import { toFormData } from "axios";
+import axios from "./axios";
 
 const BASE_URL = "/users";
 

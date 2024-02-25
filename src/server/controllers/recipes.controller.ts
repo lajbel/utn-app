@@ -43,7 +43,7 @@ export const createRecipe: CreateRecipeRequest = async (req, res) => {
             content,
             portraitImage: uploadedPortraitImageURL,
             summary,
-            tags: tags?.pop(),
+            tags: tags,
             user: req.user.id,
         }).save();
 
@@ -80,10 +80,7 @@ export const getRecipe: GetRecipeRequest = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const recipe = await RecipeModel.findById(id).populate(
-            "user",
-            "username profilePhoto",
-        );
+        const recipe = await RecipeModel.findById(id);
 
         if (!recipe) {
             return res.status(404).json({
@@ -91,9 +88,14 @@ export const getRecipe: GetRecipeRequest = async (req, res) => {
             });
         }
 
+        const populatedRecipe = await recipe?.populate(
+            "user",
+            "username profilePhoto",
+        );
+
         res.status(200).json({
             message: "Recipe fetched successfully",
-            recipe: recipe.toObject(),
+            recipe: populatedRecipe.toObject(),
         });
     }
     catch (e) {
@@ -147,7 +149,7 @@ export const updateRecipe: UpdateRecipeRequest = async (req, res) => {
             content,
             portraitImage: uploadedPortraitImageURL,
             summary,
-            tags: tags?.pop(),
+            tags: tags,
         };
 
         const updatedRecipeInDB = await RecipeModel.findByIdAndUpdate(
