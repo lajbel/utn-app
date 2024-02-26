@@ -2,6 +2,20 @@
 
 Proyecto de final de cursada Desarrollo Web Full Stack, UTN FRBA.
 
+# Desarrollo
+
+Ademas de lo aprendido en la cursada, he hecho investigación por mi cuenta para
+añadir tecnologías que no se vieron en la cursada, y tener un código más moderno
+y seguro.
+
+Empecé el proyecto con la idea de hacer un e-commerce, pero en la vista de hacer
+algo más original, decidí hacer una aplicación de recetas de cocina. La idea es
+una especie de todo app, donde se puedan ver recetas, subir recetas, y tener
+un perfil de usuario.
+
+La idea es que esto se pueda extender para convertirse en una red social, asi
+que parte del desarrollo está pensado para eso.
+
 # Tecnologías
 
 ## MERN - Estrategia de desarrollo
